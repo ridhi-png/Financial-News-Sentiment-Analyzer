@@ -34,8 +34,6 @@ This app uses **[ProsusAI/finbert](https://huggingface.co/ProsusAI/finbert)** fr
 
 ---
 
-## ⚙️ Quick Start
 
-### Install dependencies
-Create a `requirements.txt` with:
+
 

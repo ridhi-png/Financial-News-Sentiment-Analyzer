@@ -1,0 +1,6 @@
+financial-news-sentiment-analyzer/
+├── app.py                 # Main Streamlit app
+├── requirements.txt       # Python dependencies
+├── README.md              # This file
+├── LICENSE                # e.g., MIT
+└── screenshots/           

@@ -2,7 +2,7 @@
 
 **Financial News Sentiment Analyzer App** is a user-friendly web application that analyzes financial headlines and returns sentiment probabilities (Positive / Negative / Neutral) using **FinBERT (ProsusAI/finbert)**.
 
-🌐 **Live App:** [👉 Click here to use the app](https://unreverberated-melodie-prevailingly.ngrok-free.dev/)
+🌐 **Live App:** [👉 Click here to use the app](https://financial-news-sentiment-analyzer-gnvdnasijvcsggq3jo8jqq.streamlit.app/)
 
 ---
 

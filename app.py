@@ -10,15 +10,24 @@ st.set_page_config(
 )
 
 # ── Load model (cached so it only loads once) ─────────────────────────────────
-@st.cache_resource
+@st.cache_resource(show_spinner="Loading FinBERT model... (first load may take ~30s)")
 def load_model():
-    return pipeline(
-        "text-classification",
-        model="ProsusAI/finbert",
-        return_all_scores=True
-    )
+    try:
+        return pipeline(
+            "text-classification",
+            model="ProsusAI/finbert",
+            return_all_scores=True,
+            truncation=True,
+            max_length=512
+        )
+    except Exception as e:
+        return None
 
 classifier = load_model()
+
+if classifier is None:
+    st.error("⚠️ Failed to load the FinBERT model. Please refresh the page or try again in a moment.")
+    st.stop()
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.title("📈 Financial News Sentiment Analyzer")
@@ -60,10 +69,24 @@ if col3.button("📘 Neutral example", use_container_width=True):
 # ── Analysis ──────────────────────────────────────────────────────────────────
 if analyze_btn and headline.strip():
     with st.spinner("Analyzing..."):
-        results = classifier(headline.strip())[0]
+        try:
+            raw = classifier(headline.strip())
 
-    # Map results to a clean dict
-    scores = {r["label"].capitalize(): round(r["score"] * 100, 2) for r in results}
+            # Handle both [[{...}]] and [{...}] return shapes
+            if isinstance(raw, list) and len(raw) > 0:
+                results = raw[0] if isinstance(raw[0], list) else raw
+            else:
+                raise ValueError(f"Unexpected model output format: {raw}")
+
+            if not isinstance(results, list) or not all("label" in r and "score" in r for r in results):
+                raise ValueError(f"Malformed result items: {results}")
+
+            scores = {r["label"].capitalize(): round(r["score"] * 100, 2) for r in results}
+
+        except Exception as e:
+            st.error(f"❌ Analysis failed: {e}")
+            st.stop()
+
     top_label = max(scores, key=scores.get)
     top_score = scores[top_label]
 
